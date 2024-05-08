@@ -6,11 +6,10 @@ import numpy as np
 from typing import Optional
 
 from ultralytics import YOLO
-from ultralytics.yolo.utils.plotting import Annotator, colors
-
+from ultralytics.utils.plotting import Annotator, colors
 
 # Initialize the models
-model_sample_model = YOLO("./models/sample_model/yolov8n.pt")
+model_sample_model = YOLO("./models/sample_model/best-v8.onnx")
 
 
 def get_image_from_bytes(binary_image: bytes) -> Image:
@@ -62,7 +61,7 @@ def transform_predict_to_df(results: list, labeles_dict: dict) -> pd.DataFrame:
     predict_bbox['name'] = predict_bbox["class"].replace(labeles_dict)
     return predict_bbox
 
-def get_model_predict(model: YOLO, input_image: Image, save: bool = False, image_size: int = 1248, conf: float = 0.5, augment: bool = False) -> pd.DataFrame:
+def get_model_predict(model: YOLO, input_image: Image, save: bool = False, image_size: int = 1088, conf: float = 0.5, augment: bool = False) -> pd.DataFrame:
     """
     Get the predictions of a model on an input image.
     
@@ -88,9 +87,8 @@ def get_model_predict(model: YOLO, input_image: Image, save: bool = False, image
                         fliplr= 0.0,
                         mosaic = 0.0,
                         )
-    
     # Transform predictions to pandas dataframe
-    predictions = transform_predict_to_df(predictions, model.model.names)
+    predictions = transform_predict_to_df(predictions, model.names)
     return predictions
 
 
@@ -143,8 +141,8 @@ def detect_sample_model(input_image: Image) -> pd.DataFrame:
         model=model_sample_model,
         input_image=input_image,
         save=False,
-        image_size=640,
+        image_size=1088,
         augment=False,
-        conf=0.5,
+        conf=0.25,
     )
     return predict
