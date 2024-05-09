@@ -9,7 +9,6 @@ from ultralytics import YOLO
 from ultralytics.utils.plotting import Annotator, colors
 
 # Initialize the models
-model_sample_model = YOLO("./models/sample_model/best-v8.onnx")
 
 
 def get_image_from_bytes(binary_image: bytes) -> Image:
@@ -86,6 +85,7 @@ def get_model_predict(model: YOLO, input_image: Image, save: bool = False, image
                         flipud= 0.0,
                         fliplr= 0.0,
                         mosaic = 0.0,
+                        device = '0'
                         )
     # Transform predictions to pandas dataframe
     predictions = transform_predict_to_df(predictions, model.names)
@@ -126,7 +126,7 @@ def add_bboxs_on_img(image: Image, predict: pd.DataFrame()) -> Image:
 ################################# Models #####################################
 
 
-def detect_sample_model(input_image: Image) -> pd.DataFrame:
+def detect_sample_model(input_image: Image, model_sample_model: YOLO) -> pd.DataFrame:
     """
     Predict from sample_model.
     Base on YoloV8
@@ -136,6 +136,8 @@ def detect_sample_model(input_image: Image) -> pd.DataFrame:
 
     Returns:
         pd.DataFrame: DataFrame containing the object location.
+        :param input_image:
+        :param model_sample_model:
     """
     predict = get_model_predict(
         model=model_sample_model,
